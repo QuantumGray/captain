@@ -1,0 +1,11 @@
+- navigator page list utilities -> pop x routes, move to root, remove all but topmost
+- riverpod provider
+- navigatorx instance just provide pagex list that implement static const routepath description
+- onRouteChanged callback option
+- route path restoration for platform is web
+- optional onpoppage callback for handling returned route value -> navigatorobserver
+- nested navigators
+
+- nothing should be necessary rather than providing list of pagex
+- route parameter handling
+- push popup, dialog
