@@ -37,7 +37,7 @@ class CaptainConfig {
   }
 }
 
-extension GetCaptain on Navigator {
+extension GetCaptain on NavigatorState {
   void action(BuildContext context, dynamic actionKey) {
     return Captain.of(context).config.invokeAction(actionKey);
   }
