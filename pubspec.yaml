@@ -1,7 +1,7 @@
 name: captain
 description: declarative routing with an imperative facade
 version: 0.0.1
-repository: 
+repository: https://github.com/QuantumGray/captain
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
