@@ -1,4 +1,4 @@
-## [0.0.2-null-safety] - 2/12/2021
+## [0.0.2-nullsafety] - 2/12/2021
 
 * introduced null-safety + made popPage, shouldPop, actions optional/nullable
 

@@ -1,6 +1,6 @@
 name: captain
-description: declarative routing with an imperative facade
-version: 0.0.2-null-safety
+description: declarative routing with an imperative facade. Captain manages Router (Navigator 2.0) logic by providing well defined API in old school format
+version: 0.0.2-nullsafety
 repository: https://github.com/QuantumGray/captain
 
 environment:

@@ -76,7 +76,7 @@ extension GetCaptain on NavigatorState {
 
   /// invoke a custom actionFunc on Captain with providing a function that takes a List<Page> as input and returns a List<Page> which will be the new page stack
   void actionFunc(
-    List<Page> Function(List<Page>) actionFunc, {
+    List<Page> Function(List<Page> pageStack) actionFunc, {
     dynamic? registerWithFollowingKey,
   }) {
     if (registerWithFollowingKey != null) {
