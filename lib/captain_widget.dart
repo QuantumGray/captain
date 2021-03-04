@@ -16,8 +16,13 @@ class CaptainConfig {
     this.popPage,
     this.shouldPop,
     this.actions,
+    this.parseRouteInformation,
+    this.restoreRouteInformation,
   });
   List<Page> pages;
+
+  // ### POP PAGE ###
+
   bool popPageRouterFacing(Route<dynamic> _route, dynamic? _result) {
     return popPage!(_route, _result, pages) ?? _defaultPopPage(_route, _result);
   }
@@ -27,6 +32,40 @@ class CaptainConfig {
     _res ? pages.removeLast() : _res = false;
     return _res;
   }
+
+  // ### PARSE ROUTE INFORMATION ###
+
+  final Future<Page> Function(
+          RouteInformation routeInformation, List<Page> pages)?
+      parseRouteInformation;
+
+  Future<Page> parseRouteInformationRouterFacing(
+      RouteInformation _routeInformation) async {
+    return parseRouteInformation != null
+        ? parseRouteInformation!(_routeInformation, pages)
+        : _defaultParseRouteInformation(_routeInformation);
+  }
+
+  Future<Page> _defaultParseRouteInformation(
+      RouteInformation _routeInformation) {
+    return SynchronousFuture<Page>(pages.first);
+  }
+
+  // ### RESTORE ROUTE INFORMATION ###
+
+  final RouteInformation Function(Page pages)? restoreRouteInformation;
+
+  RouteInformation restoreRouteInformationRouterFacing(Page _page) {
+    return restoreRouteInformation != null
+        ? restoreRouteInformation!(_page)
+        : _defaultRestoreRouteInformation(_page);
+  }
+
+  RouteInformation _defaultRestoreRouteInformation(Page _page) {
+    return RouteInformation(location: '/');
+  }
+
+  // ### SHOULD POP ###
 
   @protected
   final bool? Function(Route<dynamic>, dynamic, List<Page>)? popPage;
@@ -40,10 +79,12 @@ class CaptainConfig {
   }
 
   @protected
-  late Future<bool>? Function(List<Page>)? shouldPop;
+  late Future<bool>? Function(List<Page> pages)? shouldPop;
+
+  // ### ACTIONS ###
 
   @protected
-  final Map<dynamic, List<Page> Function(List<Page>)>? actions;
+  final Map<dynamic, List<Page> Function(List<Page> pages)>? actions;
 
   StreamController<bool> shouldRebuildMessengerPipe =
       StreamController.broadcast();
@@ -53,7 +94,7 @@ class CaptainConfig {
     shouldRebuildMessengerPipe.add(true);
   }
 
-  void invokeActionFunc(List<Page> Function(List<Page>) actionFunc) {
+  void invokeActionFunc(List<Page> Function(List<Page> pages) actionFunc) {
     pages = actionFunc(pages);
     shouldRebuildMessengerPipe.add(true);
   }
@@ -103,6 +144,9 @@ class Captain extends InheritedWidget {
   }) : super(
           child: Router(
             routerDelegate: _AppRouterDelegate(
+              config,
+            ),
+            routeInformationParser: _AppRouteInformationParser(
               config,
             ),
           ),
@@ -155,4 +199,18 @@ class _AppRouterDelegate extends RouterDelegate
 
   @override
   GlobalKey<NavigatorState> get navigatorKey => GlobalKey<NavigatorState>();
+}
+
+class _AppRouteInformationParser extends RouteInformationParser<Page> {
+  _AppRouteInformationParser(this.config);
+  final CaptainConfig config;
+
+  @override
+  Future<Page> parseRouteInformation(
+          RouteInformation _routeInformation) async =>
+      await config.parseRouteInformationRouterFacing(_routeInformation);
+
+  @override
+  RouteInformation? restoreRouteInformation(Page _page) =>
+      config.restoreRouteInformationRouterFacing(_page);
 }
